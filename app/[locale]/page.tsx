@@ -1,10 +1,12 @@
 import Link from 'next/link';
-import { academyConfig, type Locale } from '@/lib/config';
+import { notFound } from 'next/navigation';
+import { academyConfig, isLocale } from '@/lib/config';
 import { copy, formations, programme, testimonials } from '@/lib/content';
 import { FinalCta } from './components/SiteChrome';
 
-export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  if (!isLocale(locale)) notFound();
   const c = copy[locale];
   return (
     <main>

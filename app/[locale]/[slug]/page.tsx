@@ -1,22 +1,21 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { academyConfig, dynamicPageSlugs, type DynamicPageSlug, type Locale } from '@/lib/config';
+import { academyConfig, dynamicPageSlugs, isDynamicPageSlug, isLocale, locales, type DynamicPageSlug, type Locale } from '@/lib/config';
 import { faqs, formations, priceLabels, programme, seo, terms } from '@/lib/content';
 import { FinalCta } from '../components/SiteChrome';
 
-type Props = { params: Promise<{ locale: Locale; slug: DynamicPageSlug }> };
-
-const allowed: readonly DynamicPageSlug[] = dynamicPageSlugs;
+type Props = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
-  return (['fr', 'ar'] as Locale[]).flatMap((locale) => allowed.map((slug) => ({ locale, slug })));
+  return locales.flatMap((locale) => dynamicPageSlugs.map((slug) => ({ locale, slug })));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const data = seo[locale]?.[slug];
-  return { title: data?.title, description: data?.description, alternates: { languages: { fr: `/fr/${slug}`, ar: `/ar/${slug}` } } };
+  if (!isLocale(locale) || !isDynamicPageSlug(slug)) return {};
+  const data = seo[locale][slug];
+  return { title: data.title, description: data.description, alternates: { languages: { fr: `/fr/${slug}`, ar: `/ar/${slug}` } } };
 }
 
 function Hero({ locale, slug }: { locale: Locale; slug: DynamicPageSlug }) {
@@ -26,7 +25,7 @@ function Hero({ locale, slug }: { locale: Locale; slug: DynamicPageSlug }) {
 
 export default async function GenericPage({ params }: Props) {
   const { locale, slug } = await params;
-  if (!allowed.includes(slug)) notFound();
+  if (!isLocale(locale) || !isDynamicPageSlug(slug)) notFound();
   if (slug === 'formations') return <Formations locale={locale} slug={slug} />;
   if (slug === 'programme') return <Programme locale={locale} slug={slug} />;
   if (slug === 'tarifs') return <Tarifs locale={locale} slug={slug} />;

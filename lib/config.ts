@@ -53,3 +53,11 @@ export type PageSlug = (typeof pageSlugs)[number];
 
 export const dynamicPageSlugs = ['formations', 'programme', 'tarifs', 'faq', 'contact', 'conditions-generales'] as const;
 export type DynamicPageSlug = (typeof dynamicPageSlugs)[number];
+
+export function isLocale(value: string): value is Locale {
+  return locales.includes(value as Locale);
+}
+
+export function isDynamicPageSlug(value: string): value is DynamicPageSlug {
+  return dynamicPageSlugs.includes(value as DynamicPageSlug);
+}
