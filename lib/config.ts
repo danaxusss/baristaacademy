@@ -50,3 +50,6 @@ export const navItems = [
 
 export const pageSlugs = ['', 'formations', 'programme', 'tarifs', 'galerie', 'inscription', 'faq', 'contact', 'conditions-generales'] as const;
 export type PageSlug = (typeof pageSlugs)[number];
+
+export const dynamicPageSlugs = ['formations', 'programme', 'tarifs', 'faq', 'contact', 'conditions-generales'] as const;
+export type DynamicPageSlug = (typeof dynamicPageSlugs)[number];
